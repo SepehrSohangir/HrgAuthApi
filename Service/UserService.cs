@@ -2,6 +2,7 @@
 using HrgAuthApi.Dto;
 using HrgAuthApi.Interfaces;
 using HrgAuthApi.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,48 +15,63 @@ public class UserService : IUserService
     private readonly IUserRepository _repository;
     private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
+    private readonly ITokenDescriptorBuilder _tokenDescriptorBuilder;
+    private readonly ITokenDescriptorFactory _tokenDescriptorFactory;
 
-    public UserService(IUserRepository repository, IMapper mapper, IConfiguration configuration)
+    public UserService(IUserRepository repository, IMapper mapper, IConfiguration configuration,
+        ITokenDescriptorBuilder tokenDescriptorBuilder, ITokenDescriptorFactory tokenDescriptorFactory)
     {
         _repository = repository;
         _mapper = mapper;
         _configuration = configuration;
+        _tokenDescriptorBuilder = tokenDescriptorBuilder;
+        _tokenDescriptorFactory = tokenDescriptorFactory;
     }
-    public string GenerateToken(UsersDto userInput)
+    public string GenerateToken(UsersDto inputUser)
     {
         try
         {
-            var userOutput = _repository.GetUserInfo(userInput.UserId, userInput.CompanyID);
-            if (ValidateUserInputData(userInput, userOutput))
+            var userPassword = _repository.GetUserPassword(inputUser.UserId, inputUser.CompanyID);
+            if (!ValidateUserPassword(inputUser.Password, userPassword))
                 return string.Empty;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, userOutput.UserName),
-                    new Claim(ClaimTypes.Surname, userOutput.Surname),
-                    new Claim(ClaimTypes.)
-                    new Claim("GroupCode", Convert.ToString(userOutput.GroupCode)),
-                    new Claim(ClaimTypes.)
-                }),
-                IssuedAt = DateTime.UtcNow,
-                Issuer = _configuration["JWT:Issuer"],
-                Audience = _configuration["JWT:Audience"],
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            };
+            var tokenDescriptor = _tokenDescriptorBuilder.WithSubject
+                (
+                    _tokenDescriptorFactory.CreateClaims(inputUser.UserId, inputUser.CompanyID)
+                )
+                .WithIssuer(_configuration["JWT:Issuer"])
+                .WithAudience(_configuration["JWT:Audience"])
+                .WithIssuedAt(DateTime.UtcNow)
+                .WithExpirationTime(DateTime.UtcNow.AddMinutes(30))
+                .WithSigningCredentials(new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature))
+                .Build();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
         catch(Exception ex)
         {
-
+            return string.Empty;
         }
     }
-    private bool ValidateUserInputData(UsersDto userInput, Users userOutput)
+    public bool ValidateUserPassword(string inputPassword, string realPassword)
     {
-        return userInput is not null &&
-            BCrypt.Net.BCrypt.Verify(Convert.ToBase64String(userInput.Password), Convert.ToBase64String(userOutput.Password ?? Array.Empty<byte>()));
+        // Ensure that neither the inputPassword nor the realPassword is null
+        if (inputPassword is null || realPassword is null)
+        {
+            return false;
+        }
+
+        try
+        {
+            // Use BCrypt.Verify to check the inputPassword against the hashed realPassword
+            return string.Equals(realPassword, inputPassword);
+        }
+        catch (BCrypt.Net.SaltParseException)
+        {
+            // Handle the SaltParseException, likely due to invalid salt version
+            return false;
+        }
     }
+
 }

@@ -1,11 +1,15 @@
 
 
+using HrgAuthApi.Builders;
 using HrgAuthApi.Context;
 using HrgAuthApi.Factory;
 using HrgAuthApi.Interfaces;
 using HrgAuthApi.Repository;
 using HrgAuthApi.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +20,16 @@ builder.Services.AddDbContext<UsersDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenDescriptorFactory, TokenDescriptorFactory>();
+builder.Services.AddScoped<ITokenDescriptorBuilder, TokenDescriptorBuilder>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -32,8 +41,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

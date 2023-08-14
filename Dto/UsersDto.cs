@@ -3,7 +3,6 @@
 public class UsersDto
 {
     public int UserId { get; set; }
-    public short GroupCode { get; set; }
-    public byte[] Password { get; set; } = new byte[32];
+    public string Password { get; set; } = string.Empty;
     public int CompanyID { get; set; }
 }

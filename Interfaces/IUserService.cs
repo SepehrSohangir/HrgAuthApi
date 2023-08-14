@@ -6,4 +6,5 @@ namespace HrgAuthApi.Interfaces;
 public interface IUserService
 {
     string GenerateToken(UsersDto user);
+    bool ValidateUserPassword(string inputPassword, string realPassword);
 }
