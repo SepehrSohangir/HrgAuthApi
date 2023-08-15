@@ -17,7 +17,11 @@ namespace HrgAuthApi.Controllers
         [HttpPost(Name = "GenerateToken")]
         public IActionResult GenerateToken(UsersDto user)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var token = _userService.GenerateToken(user);
+            if (token is null)
+                return BadRequest();
             return Ok(token);
         }
     }

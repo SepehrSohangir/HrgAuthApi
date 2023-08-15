@@ -41,5 +41,7 @@ public class Users
     public string? Phonenumber { get; set; }
     [Column(TypeName = "varchar(8)")]
     public string LastLoginDate { get; set; } = string.Empty;
+    [Column(TypeName = "varbinary(MAX)")]
+    public byte[]? Signature { get; set; }
     public UserGroups? UserGroup { get; set; }
 }
