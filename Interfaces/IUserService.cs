@@ -1,10 +1,11 @@
-﻿using HrgAuthApi.Dto;
+﻿using FluentValidation.Results;
+using HrgAuthApi.Dto;
 using Microsoft.AspNetCore.Identity;
 
 namespace HrgAuthApi.Interfaces;
 
 public interface IUserService
 {
-    string GenerateToken(UsersDto user);
-    bool ValidateUserPassword(string inputPassword, string realPassword);
+    TokenDto GenerateToken(UsersDto inputUser);
+    ValidationResult ValidateUserInfo(UsersDto user);
 }

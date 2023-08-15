@@ -6,7 +6,7 @@ namespace HrgAuthApi.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    public class AuthenticationController : Controller
+    public class AuthenticationController : ControllerBase
     {
         private readonly IUserService _userService;
 
@@ -14,14 +14,22 @@ namespace HrgAuthApi.Controllers
         {
             _userService = userService;
         }
-        [HttpPost(Name = "GenerateToken")]
+        [HttpPost("GenerateToken", Name = "GenerateToken")]
         public IActionResult GenerateToken(UsersDto user)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var result = _userService.ValidateUserInfo(user);
+            if (!result.IsValid)
+            {
+                return BadRequest(
+                        Results.ValidationProblem(
+                            result.ToDictionary(),
+                            title: "تعدادی از اطلاعات وارد شده صحیح نمیباشند.",
+                            statusCode: StatusCodes.Status400BadRequest
+                        )
+                    );
+
+            }
             var token = _userService.GenerateToken(user);
-            if (token is null)
-                return BadRequest();
             return Ok(token);
         }
     }

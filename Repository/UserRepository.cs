@@ -1,4 +1,5 @@
 ﻿using HrgAuthApi.Context;
+using HrgAuthApi.Dto;
 using HrgAuthApi.Interfaces;
 using HrgAuthApi.Models;
 using System.Text;
@@ -56,12 +57,21 @@ public class UserRepository : IUserRepository
         ArgumentNullException.ThrowIfNull(userInfo, nameof(userInfo));
         return userInfo;
     }
-    public string GetUserPassword(int userId, int companyId) 
+    public string GetUserPassword(int userId, int companyId)
     {
         var userPassword = _context.Users
             ?.FirstOrDefault(e => e.UserId == userId && e.CompanyID == companyId)
             ?.Password;
         ArgumentNullException.ThrowIfNull(userPassword, nameof(userPassword));
-        return Encoding.ASCII.GetString(userPassword);
+        return Convert.ToBase64String(userPassword);
     }
+    public bool DoesUserExist(UsersDto user)
+    {
+        var userExists = _context.Users
+            .Where(e => e.UserId == user.UserId && e.CompanyID == user.CompanyID)
+            .AsEnumerable()
+            .Any(e => Convert.ToBase64String(e.Password) == user.Password);
+        return userExists;
+    }
+
 }
