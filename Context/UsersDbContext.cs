@@ -1,6 +1,6 @@
 ﻿namespace HrgAuthApi.Context;
 
-using HrgAuthApi.Models;
+using HrgAuthApi.Models.UsersDbModels;
 using Microsoft.EntityFrameworkCore;
 
 public class UsersDbContext : DbContext

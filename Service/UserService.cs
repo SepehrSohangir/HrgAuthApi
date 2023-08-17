@@ -29,6 +29,11 @@ public class UserService : IUserService
         _tokenDescriptorFactory = tokenDescriptorFactory;
         this._userValidator = userValidator;
     }
+    /// <summary>
+    /// Generates token based on the parameters in the FAQ
+    /// </summary>
+    /// <param name="inputUser"></param>
+    /// <returns>a token with its info</returns>
     public TokenDto GenerateToken(UsersDto inputUser)
     {
         var userPassword = _repository.GetUserPassword(inputUser.UserId, inputUser.CompanyID);
@@ -37,7 +42,7 @@ public class UserService : IUserService
         var key = Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]);
         var tokenDescriptor = _tokenDescriptorBuilder.WithSubject
             (
-                _tokenDescriptorFactory.CreateClaims(inputUser.UserId, inputUser.CompanyID)
+                _tokenDescriptorFactory.CreateClaims(inputUser.UserId, inputUser.CompanyID, inputUser.MoadianSubSystemId)
             )
             .WithIssuer(_configuration["JWT:Issuer"])
             .WithAudience(_configuration["JWT:Audience"])
@@ -54,6 +59,11 @@ public class UserService : IUserService
         };
         return tokenDto;
     }
+    /// <summary>
+    /// Validates user info based on the validation logic in the validation folder
+    /// </summary>
+    /// <param name="user">user info</param>
+    /// <returns>validation result</returns>
     public ValidationResult ValidateUserInfo(UsersDto user)
     {
         return _userValidator.Validate(user);

@@ -1,7 +1,7 @@
 ﻿using HrgAuthApi.Context;
 using HrgAuthApi.Dto;
 using HrgAuthApi.Interfaces;
-using HrgAuthApi.Models;
+using HrgAuthApi.Models.UsersDbModels;
 using System.Text;
 
 namespace HrgAuthApi.Repository;

@@ -16,6 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<UsersDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("UserManagement"))
 );
+builder.Services.AddDbContext<PublicDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PublicData"))
+);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenDescriptorFactory, TokenDescriptorFactory>();

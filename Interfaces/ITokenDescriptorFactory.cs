@@ -4,9 +4,9 @@ namespace HrgAuthApi.Interfaces
 {
     public interface ITokenDescriptorFactory
     {
-        ClaimsIdentity CreateClaims(int userId, int companyId);
-        List<Claim> AddCustomClaims(string permissionCode, string userIdString, string companyIdString);
+        List<Claim> AddCustomClaims(string permissionCode, string userIdString
+            , string companyIdString, string moadianSubSystemId);
         List<Claim> AddUserInfoClaims(string name, string surname);
-
+        ClaimsIdentity CreateClaims(int userId, int companyId, int moadianSubSystem);
     }
 }

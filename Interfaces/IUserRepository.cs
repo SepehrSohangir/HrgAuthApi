@@ -1,5 +1,5 @@
 ﻿using HrgAuthApi.Dto;
-using HrgAuthApi.Models;
+using HrgAuthApi.Models.UsersDbModels;
 
 namespace HrgAuthApi.Interfaces;
 

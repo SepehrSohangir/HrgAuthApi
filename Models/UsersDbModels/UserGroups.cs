@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HrgAuthApi.Models;
+namespace HrgAuthApi.Models.UsersDbModels;
 
 public class UserGroups
 {

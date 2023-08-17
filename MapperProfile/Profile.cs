@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using HrgAuthApi.Models;
+using HrgAuthApi.Models.UsersDbModels;
 
 namespace HrgAuthApi.MapperProfile
 {

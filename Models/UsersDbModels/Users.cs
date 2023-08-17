@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HrgAuthApi.Models;
+namespace HrgAuthApi.Models.UsersDbModels;
 
 public class Users
 {
