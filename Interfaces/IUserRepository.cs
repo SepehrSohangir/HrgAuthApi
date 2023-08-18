@@ -9,4 +9,5 @@ public interface IUserRepository
     string GetUserGroupPermissionCode(int groupCode);
     string GetUserPassword(int userId, int companyId);
     bool DoesUserExist(UsersDto user);
+    bool MoadianSubSystemExists(int moadianSubsystemId);
 }

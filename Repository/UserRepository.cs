@@ -8,15 +8,17 @@ namespace HrgAuthApi.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly UsersDbContext _context;
+    private readonly UsersDbContext _salesDbContext;
+    private readonly PublicDbContext _publicDbContext;
 
-    public UserRepository(UsersDbContext context)
+    public UserRepository(UsersDbContext salesDbContext, PublicDbContext publicDbContext)
     {
-        this._context = context;
+        this._salesDbContext = salesDbContext;
+        this._publicDbContext = publicDbContext;
     }
     public string GetUserGroupPermissionCode(int groupCode)
     {
-        return _context.UserGroups
+        return _salesDbContext.UserGroups
             .Where(e => e.GroupCode == groupCode)
             .Select(e => e.PermissionCode)
             .FirstOrDefault() ?? string.Empty;
@@ -24,8 +26,8 @@ public class UserRepository : IUserRepository
 
     public Users GetUserInfo(int userId, int companyId)
     {
-        var userInfo = (from us in _context.Users
-                        join ug in _context.UserGroups on us.GroupCode equals ug.GroupCode
+        var userInfo = (from us in _salesDbContext.Users
+                        join ug in _salesDbContext.UserGroups on us.GroupCode equals ug.GroupCode
                         where us.UserId == userId && us.CompanyID == companyId
                         select new Users
                         {
@@ -57,9 +59,13 @@ public class UserRepository : IUserRepository
         ArgumentNullException.ThrowIfNull(userInfo, nameof(userInfo));
         return userInfo;
     }
+    public bool MoadianSubSystemExists(int moadianSubsystemId)
+    {
+        return _publicDbContext.TblMoadianSubSystems_H.Any(e => e.Id == moadianSubsystemId);
+    }
     public string GetUserPassword(int userId, int companyId)
     {
-        var userPassword = _context.Users
+        var userPassword = _salesDbContext.Users
             ?.FirstOrDefault(e => e.UserId == userId && e.CompanyID == companyId)
             ?.Password;
         ArgumentNullException.ThrowIfNull(userPassword, nameof(userPassword));
@@ -67,7 +73,7 @@ public class UserRepository : IUserRepository
     }
     public bool DoesUserExist(UsersDto user)
     {
-        var userExists = _context.Users
+        var userExists = _salesDbContext.Users
             .Where(e => e.UserId == user.UserId && e.CompanyID == user.CompanyID)
             .AsEnumerable()
             .Any(e => Convert.ToBase64String(e.Password) == user.Password);

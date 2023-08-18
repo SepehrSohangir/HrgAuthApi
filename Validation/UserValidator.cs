@@ -28,6 +28,12 @@ namespace HrgAuthApi.Validation
                     return userRepository.DoesUserExist(userInfo);
                 })
                 .WithMessage("کاربر وارد شده در سیستم موجود نمیباشد.");
+                RuleFor(p => p.MoadianSubSystemId)
+                .Must((moadianSubSystemId) =>
+                {
+                    return userRepository.MoadianSubSystemExists(moadianSubSystemId);
+                })
+                .WithMessage("زیرسیستم وارد شده موجود نیست.");
             });
         }
     }
