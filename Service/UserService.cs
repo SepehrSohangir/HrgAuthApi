@@ -53,8 +53,8 @@ public class UserService : IUserService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var tokenDto = new TokenDto
         {
-            ExpiresIn = tokenDescriptor.Expires.Value,
-            GeneratedAt = tokenDescriptor.IssuedAt.Value,
+            ExpiresIn = tokenDescriptor.Expires!.Value,
+            GeneratedAt = tokenDescriptor.IssuedAt!.Value,
             Token = tokenHandler.WriteToken(token)
         };
         return tokenDto;

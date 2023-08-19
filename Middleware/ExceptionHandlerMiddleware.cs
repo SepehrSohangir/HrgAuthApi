@@ -10,10 +10,12 @@ namespace HrgAuthApi.Middleware
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next)
+        public ExceptionHandlerMiddleware(RequestDelegate next, ILogger logger)
         {
             _next = next;
+            this._logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -46,6 +48,7 @@ namespace HrgAuthApi.Middleware
 
         private void LogException(Exception ex)
         {
+            _logger.LogError(ex, "Unexpected error occured");
         }
     }
 }

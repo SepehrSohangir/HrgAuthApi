@@ -17,26 +17,27 @@ namespace HrgAuthApi.Factory
             _mapper = mapper;
             _claims = new List<Claim>();
         }
-        public ClaimsIdentity CreateClaims(int userId, int companyId, int moadianSubSystem)
+        public ClaimsIdentity CreateClaims(int userId, int companyId, int moadianSubSystem, int invYear)
         {
             var userInfo = _userRepository.GetUserInfo(userId, companyId);
             var claimsDto = _mapper.Map<Users, ClaimsDto>(userInfo);
             var customClaims = AddCustomClaims(claimsDto.PermissionCode, claimsDto.UserIdString
-                , claimsDto.CompanyIdString, Convert.ToString(moadianSubSystem));
+                , claimsDto.CompanyIdString, Convert.ToString(moadianSubSystem), Convert.ToString(invYear));
             _claims.AddRange(customClaims);
             var userInfoClaims = AddUserInfoClaims(claimsDto.Name, claimsDto.Surname);
             _claims.AddRange(userInfoClaims);
             return new ClaimsIdentity(_claims);
         }
         public List<Claim> AddCustomClaims(string permissionCode, string userIdString
-            , string companyIdString, string moadianSubSystemId)
+            , string companyIdString, string moadianSubSystemId, string invYear)
         {
             var customClaims = new List<Claim>
             {
                 {new Claim("PermissionCode",permissionCode)},
                 {new Claim("UserId", userIdString) },
                 {new Claim("CompanyId", companyIdString) },
-                {new Claim("MoadianSubsystemId", moadianSubSystemId) }
+                {new Claim("MoadianSubsystemId", moadianSubSystemId) },
+                {new Claim("InvYear", invYear) }
             };
             return customClaims;
         }

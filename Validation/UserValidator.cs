@@ -10,15 +10,18 @@ namespace HrgAuthApi.Validation
         public UserValidator(IUserRepository userRepository)
         {
             RuleFor(p => p.UserId)
-                .NotEqual(0)
+                .GreaterThan(0)
                 .WithMessage("وارد کردن اطلاعات کاربر اجباری است.");
             RuleFor(p => p.Password)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("رمز عبور کاربر به درستی وارد نشده است.");
             RuleFor(p => p.CompanyID)
-                .NotEqual(0)
+                .GreaterThan(0)
                 .WithMessage("اطلاعات کمپانی کاربر معتبر نمیباشد.");
+            RuleFor(p => p.InvYear)
+                .InclusiveBetween(1300, 1500)
+                .WithMessage("سال مالی وارد شده معتبر نمیباشد.");
 
             When(p => p.UserId != 0 && p.CompanyID != 0 && !string.IsNullOrEmpty(p.Password), () =>
             {
@@ -34,6 +37,7 @@ namespace HrgAuthApi.Validation
                     return userRepository.MoadianSubSystemExists(moadianSubSystemId);
                 })
                 .WithMessage("زیرسیستم وارد شده موجود نیست.");
+
             });
         }
     }

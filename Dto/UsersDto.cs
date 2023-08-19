@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Identity.Client;
+using Newtonsoft.Json;
 
 namespace HrgAuthApi.Dto;
 
@@ -8,4 +9,5 @@ public class UsersDto
     public string Password { get; set; } = string.Empty;
     public int CompanyID { get; set; }
     public int MoadianSubSystemId { get; set; }
+    public int InvYear { get; set; }
 }
