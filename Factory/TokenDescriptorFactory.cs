@@ -33,7 +33,7 @@ namespace HrgAuthApi.Factory
         {
             var customClaims = new List<Claim>
             {
-                {new Claim("PermissionCode",permissionCode)},
+                {new Claim("PermissionCode",permissionCode.Substring(16001))},
                 {new Claim("UserId", userIdString) },
                 {new Claim("CompanyId", companyIdString) },
                 {new Claim("MoadianSubsystemId", moadianSubSystemId) },

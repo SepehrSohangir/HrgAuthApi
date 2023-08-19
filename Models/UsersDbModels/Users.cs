@@ -27,7 +27,7 @@ public class Users
     public byte[]? Picture { get; set; }
     public int CompanyID { get; set; }
     public int? PID { get; set; }
-    public short startPageMode { get; set; }
+    public byte startPageMode { get; set; }
     [Column(TypeName = "nvarchar(50)")]
     public string? UserWord { get; set; }
     public bool DisableUser { get; set; }
@@ -35,7 +35,7 @@ public class Users
     [Column(TypeName = "varchar(128)")]
     public string? usrPasswordSalt { get; set; }
     public bool UserMustChangePassword { get; set; }
-    public int? LastPasswordChange { get; set; }
+    public int? LastPasswordChangeDate { get; set; }
     public bool PTAC { get; set; }
     [Column(TypeName = "char(11)")]
     public string? Phonenumber { get; set; }

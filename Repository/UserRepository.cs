@@ -50,7 +50,7 @@ public class UserRepository : IUserRepository
                             ID = us.ID,
                             usrPasswordSalt = us.usrPasswordSalt,
                             UserMustChangePassword = us.UserMustChangePassword,
-                            LastPasswordChange = us.LastPasswordChange,
+                            LastPasswordChangeDate = us.LastPasswordChangeDate,
                             PTAC = us.PTAC,
                             Phonenumber = us.Phonenumber,
                             LastLoginDate = us.LastLoginDate,

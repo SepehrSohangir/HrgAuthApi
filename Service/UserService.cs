@@ -42,7 +42,7 @@ public class UserService : IUserService
         var key = Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]);
         var tokenDescriptor = _tokenDescriptorBuilder.WithSubject
             (
-                _tokenDescriptorFactory.CreateClaims(inputUser.UserId, inputUser.CompanyID, inputUser.MoadianSubSystemId)
+                _tokenDescriptorFactory.CreateClaims(inputUser.UserId, inputUser.CompanyID, inputUser.MoadianSubSystemId, inputUser.InvYear)
             )
             .WithIssuer(_configuration["JWT:Issuer"])
             .WithAudience(_configuration["JWT:Audience"])

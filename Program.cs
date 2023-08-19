@@ -23,7 +23,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenDescriptorFactory, TokenDescriptorFactory>();
 builder.Services.AddScoped<ITokenDescriptorBuilder, TokenDescriptorBuilder>();
-builder.Services.AddLogging();
+builder.Services.AddLogging(options => options.AddConsole());
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
