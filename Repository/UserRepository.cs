@@ -8,17 +8,17 @@ namespace HrgAuthApi.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly UsersDbContext _salesDbContext;
+    private readonly UsersDbContext _usersDbContext;
     private readonly PublicDbContext _publicDbContext;
 
     public UserRepository(UsersDbContext salesDbContext, PublicDbContext publicDbContext)
     {
-        this._salesDbContext = salesDbContext;
+        this._usersDbContext = salesDbContext;
         this._publicDbContext = publicDbContext;
     }
     public string GetUserGroupPermissionCode(int groupCode)
     {
-        return _salesDbContext.UserGroups
+        return _usersDbContext.UserGroups
             .Where(e => e.GroupCode == groupCode)
             .Select(e => e.PermissionCode)
             .FirstOrDefault() ?? string.Empty;
@@ -26,8 +26,8 @@ public class UserRepository : IUserRepository
 
     public Users GetUserInfo(int userId, int companyId)
     {
-        var userInfo = (from us in _salesDbContext.Users
-                        join ug in _salesDbContext.UserGroups on us.GroupCode equals ug.GroupCode
+        var userInfo = (from us in _usersDbContext.Users
+                        join ug in _usersDbContext.UserGroups on us.GroupCode equals ug.GroupCode
                         where us.UserId == userId && us.CompanyID == companyId
                         select new Users
                         {
@@ -65,7 +65,7 @@ public class UserRepository : IUserRepository
     }
     public string GetUserPassword(int userId, int companyId)
     {
-        var userPassword = _salesDbContext.Users
+        var userPassword = _usersDbContext.Users
             ?.FirstOrDefault(e => e.UserId == userId && e.CompanyID == companyId)
             ?.Password;
         ArgumentNullException.ThrowIfNull(userPassword, nameof(userPassword));
@@ -73,7 +73,7 @@ public class UserRepository : IUserRepository
     }
     public bool DoesUserExist(UsersDto user)
     {
-        var userExists = _salesDbContext.Users
+        var userExists = _usersDbContext.Users
             .Where(e => e.UserId == user.UserId && e.CompanyID == user.CompanyID)
             .AsEnumerable()
             .Any(e => Convert.ToBase64String(e.Password) == user.Password);

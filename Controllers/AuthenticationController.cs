@@ -9,28 +9,26 @@ namespace HrgAuthApi.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IValidationHandler _validationHandler;
 
-        public AuthenticationController(IUserService userService)
+        public AuthenticationController(
+            IUserService userService,
+            IValidationHandler validationHandler)
         {
             _userService = userService;
+            this._validationHandler = validationHandler;
         }
         [HttpPost("GenerateToken", Name = "GenerateToken")]
         public IActionResult GenerateToken(UsersDto user)
         {
-            var result = _userService.ValidateUserInfo(user);
-            if (!result.IsValid)
+            var validationResult = _userService.ValidateUserInfo(user);
+            var isValid = _validationHandler.ValidateJsonObject(validationResult, out FailedResponseDto badRequestObject);
+            if (!isValid)
             {
-                return BadRequest(
-                        Results.ValidationProblem(
-                            result.ToDictionary(),
-                            title: "تعدادی از اطلاعات وارد شده صحیح نمیباشند.",
-                            statusCode: StatusCodes.Status400BadRequest
-                        )
-                    );
-
+                return BadRequest(badRequestObject);
             }
-            var token = _userService.GenerateToken(user);
-            return Ok(token);
+            var result = _validationHandler.WrapSuccessfulResponse(_userService.GenerateToken(user));
+            return Ok(result);
         }
     }
 }

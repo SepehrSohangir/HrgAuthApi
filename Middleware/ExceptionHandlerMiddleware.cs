@@ -34,10 +34,11 @@ namespace HrgAuthApi.Middleware
                 context.Response.ContentType = "application/json";
 
                 // Create a standardized error response
-                var errorResponse = new Dto.InternalServerErrorDto
+                var errorResponse = new Dto.FailedResponseDto
                 {
-                    ErrorHeader = "INTERNAL_SERVER_ERROR",
-                    ErrorDesc = "بروز خطای داخلی"
+                    Status = "InternalServerError",
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Message = "بروز خطای داخلی"
                 };
 
                 // Serialize and write the error response to the response stream
