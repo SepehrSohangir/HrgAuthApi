@@ -16,7 +16,7 @@ namespace HrgAuthApi.Validation
             RuleFor(p => p.Password)
                 .NotEmpty()
                 .WithErrorCode(UserEnum.PasswordEmpty.ToString("d"))
-                .WithMessage("رمز عبور کاربر به درستی وارد نشده است.");
+                .WithMessage("وارد کردن رمزعبور کاربر اجباری است.");
             RuleFor(p => p.CompanyID)
                 .GreaterThan(0)
                 .WithErrorCode(UserEnum.CompanyIdInvalid.ToString("d"))

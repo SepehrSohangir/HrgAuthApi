@@ -26,12 +26,12 @@ builder.Services.AddScoped<ITokenDescriptorFactory, TokenDescriptorFactory>();
 builder.Services.AddScoped<ITokenDescriptorBuilder, TokenDescriptorBuilder>();
 builder.Services.AddScoped<IValidationHandler, ValidationHandler>();
 builder.Services.AddLogging(options => options.AddConsole());
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies().Where(e => !e.IsDynamic));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(e => !e.IsDynamic));
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
